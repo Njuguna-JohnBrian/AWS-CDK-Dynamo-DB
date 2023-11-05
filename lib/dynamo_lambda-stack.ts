@@ -34,37 +34,37 @@ export class DynamoLambdaStack extends cdk.Stack {
     table.grantReadData(new iam.AccountRootPrincipal());
 
     //grant read permission to lambda
-    // table.grantReadData(lambdaName);
+    table.grantReadData(lambdaName);
 
     //grant specific permission to lambda
-    // table.grant(lambdaName, ["dynamodb:Query"]);
+    table.grant(lambdaName, ["dynamodb:Query"]);
 
     /**
      * Auto Scaling Configurations for Provisioned databases
      *
      */
 
-    //configure autoscaling on table
-    // const writeAutoScalng = table.autoScaleWriteCapacity({
-    //   maxCapacity: 2,
-    //   minCapacity: 1,
-    // });
+    // configure autoscaling on table
+    const writeAutoScalng = table.autoScaleWriteCapacity({
+      maxCapacity: 2,
+      minCapacity: 1,
+    });
 
     //scale up when write capacity hits 75%
-    // writeAutoScalng.scaleOnUtilization({
-    //   targetUtilizationPercent: 75,
-    // });
+    writeAutoScalng.scaleOnUtilization({
+      targetUtilizationPercent: 75,
+    });
 
     //scale up at 9am
-    // writeAutoScalng.scaleOnSchedule("scale-up", {
-    //   schedule: appautoscaling.Schedule.cron({ hour: "9", minute: "0" }),
-    //   minCapacity: 2,
-    // });
+    writeAutoScalng.scaleOnSchedule("scale-up", {
+      schedule: appautoscaling.Schedule.cron({ hour: "9", minute: "0" }),
+      minCapacity: 2,
+    });
 
     //scale down in the afternoon
-    // writeAutoScalng.scaleOnSchedule("scale-down", {
-    //   schedule: appautoscaling.Schedule.cron({ hour: "14", minute: "0" }),
-    //   maxCapacity: 2,
-    // });
+    writeAutoScalng.scaleOnSchedule("scale-down", {
+      schedule: appautoscaling.Schedule.cron({ hour: "14", minute: "0" }),
+      maxCapacity: 2,
+    });
   }
 }
